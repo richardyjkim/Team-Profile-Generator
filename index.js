@@ -19,7 +19,6 @@ addMember = () => {
       }
     }
   },
-
   {
     type: 'text',
     name: 'id',
@@ -51,5 +50,49 @@ addMember = () => {
     name: 'role',
     message: "What is this employee's current role?",
     choices: ["Manager", "Engineer", "Intern"]
-  }]);
+  }])
+    .then(({ name, id, email, role }) => {
+      let employeeRole = "";
+      if (role === "Manager") {
+        employeeRole = "Office number"
+      } else if (role === "Engineer") {
+        employeeRole = "Github"
+      } else {
+        employeeRole = "School"
+      }
+      inquirer.prompt([{
+        type: 'text',
+        name: 'employeeRole',
+        message: `Please enter your Employee's ${employeeRole}`
+      },
+      {
+        type: "list",
+        name: "addEmployee",
+        Message: "Anymore employee you would like to add?",
+        choices: [
+          "Add more",
+          "No more"
+        ]
+      }])
+        .then(({ employeeRole, addEmployee }) => {
+          let newEmployee;
+          if (role === "Manager") {
+            newEmployee = new Manager(name, id, email, employeeRole);
+          } else if (role === "Engineer") {
+            newEmployee = new Engineer(name, id, email, employeeRole);
+          } else {
+            newEmployee = new Intern(name, id, email, employeeRole);
+          }
+          employees.push(addEmployee)
+            .then(() => {
+              if (addEmployee === "Add more") {
+                addMember();
+              } else {
+                console.log(employees);
+              }
+            })
+        })
+    })
 }
+
+addMember();
