@@ -83,14 +83,13 @@ addMember = () => {
           } else {
             newEmployee = new Intern(name, id, email, employeeRole);
           }
-          employees.push(addEmployee)
-            .then(() => {
-              if (addEmployee === "Add more") {
-                addMember();
-              } else {
-                console.log(employees);
-              }
-            })
+          employees.push(newEmployee);
+
+          if (addEmployee === "Add more") {
+            addMember();
+          } else {
+            console.log(employees);
+          }
         })
     })
 }
