@@ -7,7 +7,7 @@ test("create an school object", () => {
   expect(intern.school).toBe(testSchool);
 });
 
-test("if getRole() returns 'Intern", () => {
+test("if getRole() returns 'Intern'.", () => {
   const role = "Intern";
   const intern = new Intern("Diane", "0515", "diane@gmail.com", "UCB");
 
