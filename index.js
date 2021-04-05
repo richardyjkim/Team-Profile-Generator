@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+const generatePage = require("./src/page-template");
 
 const employees = [];
 
@@ -94,4 +95,12 @@ addMember = () => {
     })
 }
 
-addMember();
+addMember().then(employeeData => {
+  generateHTML = generatePage(employeeData);
+
+  false.writeFile('./dist/index.html', generateHTML, err => {
+    if (err) throw new Error(err);
+
+    console.log("Your team's profile site has been generated!");
+  });
+});
