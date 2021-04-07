@@ -1,15 +1,15 @@
-const fs = require("fs");
 const inquirer = require("inquirer");
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
-const {generatePage, generateProfile} = require("./src/page-template");
+const generatePage = require("./src/page-template");
+const fs = require("fs");
 
 
 const employees = [];
 
 addMember = () => {
-  inquirer.prompt([{
+  return inquirer.prompt([{
     type: 'text',
     name: 'name',
     message: "What is the employee's name?",
@@ -87,7 +87,6 @@ addMember = () => {
             newEmployee = new Intern(name, id, email, employeeRole);
           }
           employees.push(newEmployee);
-          generateProfile(newEmployee);
           if (addEmployee === "Add more") {
             addMember();
           } else {
@@ -97,4 +96,5 @@ addMember = () => {
     })
 }
 
-addMember();
+
+addMember().then(generatePage);

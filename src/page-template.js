@@ -1,7 +1,8 @@
-const fs = require ('fs');
+const fs = require("fs");
+
 
 function generatePage() {
-  return `
+  const pageHTML= `
   <!DOCTYPE html>
   <html lang="en">
 
@@ -20,72 +21,18 @@ function generatePage() {
     </nav>
     <div class="container">
       <div class="row">
-        
-       
       </div>
     </div>
   </body>
-  `
-};
-
-const generateProfile = answers => {
-  return new Promise((resolve, reject) => {
-    const role = answers.getRole();
-    const name = answers.getName();
-    const id = answers.getId();
-    const email = answers.getEmail();
-    let profile = ""
-    if (role === "Manager") {
-      const number = answers.getNumber();
-      profile = 
-   `<div class="col-6">
-      <div class="card mx-auto mb-3" style="width: 18rem">
-        <h5 class="card-header">${name}<br /><br />Manager</h5>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">ID: ${id}</li>
-          <li class="list-group-item">Email Address: ${email}</li>
-          <li class="list-group-item">Office Phone: ${number}</li>
-        </ul>
-      </div>
-    </div>`;
-    } else if (role === "Engineer") {
-      const github = answers.getGithub();
-      profile = 
-    `<div class="col-6">
-      <div class="card mx-auto mb-3" style="width: 18rem">
-        <h5 class="card-header">${name}<br /><br />Engineer</h5>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">ID: ${id}</li>
-            <li class="list-group-item">Email Address: ${email}</li>
-            <li class="list-group-item">GitHub: ${github}</li>
-        </ul>
-      </div>
-    </div>`;
-    } else {
-      const school = answers.getSchool();
-      profile = 
-      `<div class="col-6">
-        <div class="card mx-auto mb-3" style="width: 18rem">
-          <h5 class="card-header">${name}<br /><br />Intern</h5>
-          <ul class="list-group list-group-flush">
-              <li class="list-group-item">ID: ${id}</li>
-              <li class="list-group-item">Email Address: ${email}</li>
-              <li class="list-group-item">School: ${school}</li>
-          </ul>
-        </div>
-      </div>`;
+  `;
+  fs.writeFile("./dist/index.html", pageHTML, err => {
+    if(err) {
+      console.log(err)
     }
-    fs.appendFile("./dist/index.html", profile, err => {
-      if(err) {
-        reject(err);
-        return;
-      }
-      resolve({
-        ok: true,
-        message: 'File created!'
-      })
-    })
-  });
+  })
 };
 
-module.exports = {generatePage, generateProfile};
+
+
+
+module.exports = generatePage;
