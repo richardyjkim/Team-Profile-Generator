@@ -89,12 +89,90 @@ addMember = () => {
           employees.push(newEmployee);
           if (addEmployee === "Add more") {
             addMember();
+            generateProfile(newEmployee);
           } else {
             console.log(employees);
+            generateProfile(newEmployee);
+            closeHTML();
           }
         })
     })
 }
+const generateProfile = (answers) => {
+  return new Promise((resolve, reject) => {
+    const name = answers.getName();
+    const role = answers.getRole();
+    const id = answers.getId();
+    const email = answers.getEmail();
+    let profile = ""
+    if (role === "Manager") {
+      const number = answers.getNumber();
+      profile =
+        `<div class="col-6">
+      <div class="card mx-auto mb-3" style="width: 18rem">
+        <h5 class="card-header">${name}<br /><br />Manager</h5>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">ID: ${id}</li>
+          <li class="list-group-item">Email Address: ${email}</li>
+          <li class="list-group-item">Office Phone: ${number}</li>
+        </ul>
+      </div>
+    </div>`;
+    } else if (role === "Engineer") {
+      const github = answers.getGithub();
+      profile =
+        `<div class="col-6">
+      <div class="card mx-auto mb-3" style="width: 18rem">
+        <h5 class="card-header">${name}<br /><br />Engineer</h5>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">ID: ${id}</li>
+            <li class="list-group-item">Email Address: ${email}</li>
+            <li class="list-group-item">GitHub: ${github}</li>
+        </ul>
+      </div>
+    </div>`;
+    } else if (role === "Intern") {
+      const school = answers.getSchool();
+      profile =
+        `<div class="col-6">
+        <div class="card mx-auto mb-3" style="width: 18rem">
+          <h5 class="card-header">${name}<br /><br />Intern</h5>
+          <ul class="list-group list-group-flush">
+              <li class="list-group-item">ID: ${id}</li>
+              <li class="list-group-item">Email Address: ${email}</li>
+              <li class="list-group-item">School: ${school}</li>
+          </ul>
+        </div>
+      </div>`;
+    }
 
+    fs.appendFile('./dist/index.html', profile, err => {
+      if (err) {
+        reject(err);
+
+        return
+      }
+    });
+    return resolve({
+      ok: true,
+      message: "Your team profiles have been added."
+    });
+  })
+};
+
+const closeHTML = () => {
+  const closing =
+    `</div>
+  </div>
+  
+</body>
+</html>`;
+  fs.appendFile("./dist/index.html", closing, function (err) {
+    if (err) {
+      console.log(err);
+    };
+  });
+  console.log("Your Team Profiles Have been created!");
+}
 
 addMember().then(generatePage);
