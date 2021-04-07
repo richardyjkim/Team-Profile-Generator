@@ -108,9 +108,10 @@ const generateProfile = (answers) => {
     if (role === "Manager") {
       const number = answers.getNumber();
       profile =
-        `<div class="col-6">
+        `<div class="col-4">
       <div class="card mx-auto mb-3" style="width: 18rem">
-        <h5 class="card-header">${name}<br /><br />Manager</h5>
+        <h5 class="card-header text-white bg-info">${name}<br /><br />
+        <i class="fas fa-crown"></i>Manager</h5>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">ID: ${id}</li>
           <li class="list-group-item">Email Address: ${email}</li>
@@ -121,9 +122,10 @@ const generateProfile = (answers) => {
     } else if (role === "Engineer") {
       const github = answers.getGithub();
       profile =
-        `<div class="col-6">
+        `<div class="col-4">
       <div class="card mx-auto mb-3" style="width: 18rem">
-        <h5 class="card-header">${name}<br /><br />Engineer</h5>
+        <h5 class="card-header text-white bg-info">${name}<br /><br />
+        <i class="fas fa-wrench"></i>Engineer</h5>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">ID: ${id}</li>
             <li class="list-group-item">Email Address: ${email}</li>
@@ -134,9 +136,10 @@ const generateProfile = (answers) => {
     } else if (role === "Intern") {
       const school = answers.getSchool();
       profile =
-        `<div class="col-6">
+        `<div class="col-4">
         <div class="card mx-auto mb-3" style="width: 18rem">
-          <h5 class="card-header">${name}<br /><br />Intern</h5>
+          <h5 class="card-header text-white bg-info">${name}<br /><br />
+          <i class="fas fa-pencil-alt"></i>Intern</h5>
           <ul class="list-group list-group-flush">
               <li class="list-group-item">ID: ${id}</li>
               <li class="list-group-item">Email Address: ${email}</li>
