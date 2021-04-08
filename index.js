@@ -7,53 +7,63 @@ const fs = require("fs");
 
 
 const employees = [];
+const prompts = [];
+const promptData = [
+  {
+    "type": 'text',
+    "name": 'name',
+    "message": "What is the employee's name?",
+    "errorMessage": "Please enter current Employeer's name!",
+  },
+  {
+    "type": 'text',
+    "name": 'id',
+    "message": "What is the employee's id?",
+    "errorMessage": "Please enter current Employeer's id!",
+  },
+  {
+    "type": 'text',
+    "name": 'email',
+    "message": "What is the employee's E-mail address?",
+    "errorMessage": "Please enter current Employeer's email address!",
+  },
+  {
+    "type": 'list',
+    "name": 'role',
+    "message": "What is this employee's current role?",
+    "choices": ["Manager", "Engineer", "Intern"],
+  },
+];
+
+// function that builds a prompt with prompdata defined above
+buildPrompt = (promptData) => {
+  prompt = {
+    type: promptData["type"],
+    name: promptData["name"],
+    message: promptData["message"]
+  };
+
+  if (promptData["type"] == "text") {
+    prompt["validate"] = (input) => {
+      if (!input) {
+        console.log(promptData["errorMessage"]);
+      }
+      return Boolean(input);
+    }
+  } else {
+    prompt["choices"] = promptData["choices"];
+  }
+  return prompt;
+}
 
 addMember = () => {
-  return inquirer.prompt([{
-    type: 'text',
-    name: 'name',
-    message: "What is the employee's name?",
-    validate: nameInput => {
-      if (nameInput) {
-        return true;
-      } else {
-        console.log("Please enter current Employeer's name!");
-        return false;
-      }
-    }
-  },
-  {
-    type: 'text',
-    name: 'id',
-    message: "What is the employee's id?",
-    validate: idInput => {
-      if (idInput) {
-        return true;
-      } else {
-        console.log("Please enter current Employeer's id!");
-        return false;
-      }
-    }
-  },
-  {
-    type: 'text',
-    name: 'email',
-    message: "What is the employee's E-mail address?",
-    validate: emailInput => {
-      if (emailInput) {
-        return true;
-      } else {
-        console.log("Please enter current Employeer's E-mail address!");
-        return false;
-      }
-    }
-  },
-  {
-    type: 'list',
-    name: 'role',
-    message: "What is this employee's current role?",
-    choices: ["Manager", "Engineer", "Intern"]
-  }])
+
+  // build prompts for employees
+  promptData.forEach(promptData => {
+    prompts.push(buildPrompt(promptData));
+  });
+
+  return inquirer.prompt(prompts)
     .then(({ name, id, email, role }) => {
       let employeeRole = "";
       if (role === "Manager") {
@@ -91,7 +101,7 @@ addMember = () => {
             addMember();
             generateProfile(newEmployee);
           } else {
-            console.log(employees);
+            // console.log(employees);
             generateProfile(newEmployee);
             closeHTML();
           }
@@ -104,50 +114,38 @@ const generateProfile = (answers) => {
     const role = answers.getRole();
     const id = answers.getId();
     const email = answers.getEmail();
-    let profile = ""
-    if (role === "Manager") {
-      const number = answers.getNumber();
-      profile =
-        `<div class="col-4">
-      <div class="card mx-auto mb-3" style="width: 18rem">
-        <h5 class="card-header text-white bg-info">${name}<br /><br />
-        <i class="fas fa-crown"></i>Manager</h5>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">ID: ${id}</li>
-          <li class="list-group-item">Email Address: ${email}</li>
-          <li class="list-group-item">Office Phone: ${number}</li>
-        </ul>
-      </div>
-    </div>`;
-    } else if (role === "Engineer") {
-      const github = answers.getGithub();
-      profile =
-        `<div class="col-4">
-      <div class="card mx-auto mb-3" style="width: 18rem">
-        <h5 class="card-header text-white bg-info">${name}<br /><br />
-        <i class="fas fa-wrench"></i>Engineer</h5>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">ID: ${id}</li>
-            <li class="list-group-item">Email Address: ${email}</li>
-            <li class="list-group-item">GitHub: ${github}</li>
-        </ul>
-      </div>
-    </div>`;
-    } else if (role === "Intern") {
-      const school = answers.getSchool();
-      profile =
-        `<div class="col-4">
+    let profile =
+      `<div class="col-4">
         <div class="card mx-auto mb-3" style="width: 18rem">
           <h5 class="card-header text-white bg-info">${name}<br /><br />
-          <i class="fas fa-pencil-alt"></i>Intern</h5>
+          <i class="fas fa-user-circle"></i> ${role}</h5>
           <ul class="list-group list-group-flush">
-              <li class="list-group-item">ID: ${id}</li>
-              <li class="list-group-item">Email Address: ${email}</li>
-              <li class="list-group-item">School: ${school}</li>
-          </ul>
-        </div>
-      </div>`;
+            <li class="list-group-item">ID: ${id}</li>
+            <li class="list-group-item">Email Address: ${email}</li>`;
+    if (role === "Manager") {
+      const number = answers.getNumber();
+      profile = profile +
+        `
+        <li class="list-group-item">Office Phone: ${number}</li>
+       `;
+    } else if (role === "Engineer") {
+      const github = answers.getGithub();
+      profile = profile +
+        `
+        <li class="list-group-item">GitHub: ${github}</li>
+       `;
+    } else if (role === "Intern") {
+      const school = answers.getSchool();
+      profile = profile +
+        `
+        <li class="list-group-item">School: ${school}</li>
+          `;
     }
+    profile = profile +
+      `</ul>
+      </div>
+    </div>`
+      ;
 
     fs.appendFile('./dist/index.html', profile, err => {
       if (err) {
@@ -166,9 +164,8 @@ const generateProfile = (answers) => {
 const closeHTML = () => {
   const closing =
     `</div>
-  </div>
-  
-</body>
+    </div>
+  </body>
 </html>`;
   fs.appendFile("./dist/index.html", closing, function (err) {
     if (err) {
